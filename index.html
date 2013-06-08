@@ -29,6 +29,7 @@ var selectedItems = new Array();
 var pick2 = 0;
 var imczar = 0;
 var imczarintervalid;
+var redrawsRemaining;
 
 $(document).ready(function(){
 
@@ -44,9 +45,20 @@ $(document).ready(function(){
     setInterval("czjarCheck()", 2000);
     setInterval("blackCardCheck()", 2000);
     setInterval("update_score()", 3000);
+    setInterval("redraw_check()", 3000);
   }
 });
 
+function redraw_check()
+{
+
+    $.getJSON("redraw_num_check.php", { "game_id":jQuery.parseJSON($.cookie('cfh_cookie')).game_uid, "uid":jQuery.parseJSON($.cookie('cfh_cookie')).player_uid }, function(data){
+         redrawsRemaining = data.redraws_remaining;
+         $("#redraws_remaining").html(redrawsRemaining);
+         
+    });
+
+}
 function submit_Picks()
 {
   //if czar, no submit
@@ -114,6 +126,20 @@ function card_select(element)
   }
 }
 
+function redraw_submit()
+{
+  if($("#redraw_input").val() == '' || isNaN($("#redraw_submit").val()))
+  {
+    alert('value must be a valid integer');
+  }
+  else
+  {
+    $.mobile.changePage('create_game.php', {
+      type: "post",
+      data: $("#redraw_input").serialize(), 
+    });
+  }
+}
 
 function submitInfo()
 {
@@ -136,6 +162,7 @@ function submitInfo()
         setInterval("czjarCheck()", 2000);	
         setInterval("blackCardCheck()", 2000);
         setInterval("update_score()", 3000);
+        setInterval("redraw_check()", 3000);
       }
       else if (data.returnstatus == 'error')
       {
@@ -317,24 +344,36 @@ function delete_cookie()
   $(location).attr('href','index.html');
 }
 
+
 </script>
 
 <!-- html for start of game -->
 <div data-role="page" id='register'>
-
   <div data-role="header">
     <h1>Get Started</h1>
   </div><!-- /header -->
-
   <div data-role="content">	
     <form>
       <span id = 'code_enter_error_text' style = 'color:red'> </span>
       <input type="text" name="name_input" id="name_input" placeholder="Name" value="" data-clear-btn="true">
       <input type="text" name="game_id_input" id="game_id_input" placeholder="Game ID" value="" data-clear-btn="true">
       <a id='code_enter_form_submit' href="#" onclick="submitInfo()" data-role="button">Submit</a>
-      <a id='create_new_game' href="create_game.php" data-role="button" data-rel="dialog" >Create New Game</a>
+      <!--<a id='create_new_game' href="create_game.php" data-role="button" data-rel="dialog" >Create New Game</a> -->
+      <a id='create_new_game' href="#redraw_allow" data-role="button" data-rel="dialog" >Create New Game</a>
     </form>
   </div> <!-- /content -->
+</div>
+<div data-role="page" id='redraw_allow'>
+  <div data-role="header">
+    <h1> Redraws to allow </h1>
+  </div> <!-- /header -->
+  <div data-role="content">
+    <form>
+      # of White Card Redraws to allow
+      <input type="number" min="0" max="30" name="redraw_input" id="redraw_input" value="5" data-clr-btn="true"/>
+      <a href="#" onclick="redraw_submit()" id='redraw_submit' data-role="button" data-rel="dialog">Submit</a>
+    </form>
+  </div>
 </div>
 <!-- /html for start of game -->
 
@@ -371,24 +410,13 @@ function delete_cookie()
       </tr>
       <tr>
         <td>
+          Redraws Reamining: <span id='redraws_remaining'> </span>
           <a href="#" id = 'submit_picks_button' name = 'submit_picks_button' data-role='button' onclick = 'submit_white()' class='ui-disabled'> Submit</a>
           <a href="#" id = 'draw_white_card' name = 'draw_white_card' data-role='button' onclick = 'draw_white()'> Draw </a>
 	 </td>
       </tr>
       <tr id = 'white_section_row'>
        <td>
-         <!--<div class="ui-grid-d">
-	   <div class="ui-block-a"><a href="#" onclick = 'card_select(this)' name = '1_white_card_contents' id = '-1' data-role="button" style = 'height: 200px'></a></div>
-	   <div class="ui-block-b"><a href="#" onclick = 'card_select(this)' name = '2_white_card_contents' id = '-1' data-role="button" style = 'height: 200px'></a></div>
-	   <div class="ui-block-c"><a href="#" onclick = 'card_select(this)' name = '3_white_card_contents' id = '-1' data-role="button" style = 'height: 200px'></a></div>
-	   <div class="ui-block-d"><a href="#" onclick = 'card_select(this)' name = '4_white_card_contents' id = '-1' data-role="button" style = 'height: 200px'></a></div>
-	   <div class="ui-block-e"><a href="#" onclick = 'card_select(this)' name = '5_white_card_contents' id = '-1' data-role="button" style = 'height: 200px'></a></div>
-	   <div class="ui-block-a"><a href="#" onclick = 'card_select(this)' name = '6_white_card_contents' id = '-1' data-role="button" style = 'height: 200px'></a></div>
-	   <div class="ui-block-b"><a href="#" onclick = 'card_select(this)' name = '7_white_card_contents' id = '-1' data-role="button" style = 'height: 200px'></a></div>
-	   <div class="ui-block-c"><a href="#" onclick = 'card_select(this)' name = '8_white_card_contents' id = '-1' data-role="button" style = 'height: 200px'></a></div>
-	   <div class="ui-block-d"><a href="#" onclick = 'card_select(this)' name = '9_white_card_contents' id = '-1' data-role="button" style = 'height: 200px'></a></div>
-	   <div class="ui-block-e"><a href="#" onclick = 'card_select(this)' name = '10_white_card_contents' id = '-1' data-role="button" style = 'height: 200px'></a></div>
-         </div> -->
          <table id = 'white_section' style='width:100%'>
 	   <tr>
 	     <td  onclick = 'card_select(this)' name = '1_white_card_contents' style = 'padding: 10px; vertical-align:top; border-style: solid; border-width:3px' id = '-1'>  
