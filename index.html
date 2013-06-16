@@ -39,7 +39,7 @@ $(document).ready(function(){
   }
   else { //this is a returning player
     //populate gameinfo div with player id and game id
-    $('#main_page_header').html(jQuery.parseJSON($.cookie('cfh_cookie')).game_uid);
+    $('#main_page_header').html("Humanitarin Challnege - " +jQuery.parseJSON($.cookie('cfh_cookie')).game_uid);
     //setup our czar and black card timer checks
     $(location).attr('href','index.html#main');
     setInterval("czjarCheck()", 2000);
@@ -407,7 +407,7 @@ function delete_cookie()
 <!-- html for start of game -->
 <div data-role="page" id='register'>
   <div data-role="header">
-    <h1>Get Started</h1>
+    <h1>Humanitarian Challenge - Get Started</h1>
   </div><!-- /header -->
   <div data-role="content">	
     <form>
