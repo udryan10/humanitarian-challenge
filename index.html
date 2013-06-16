@@ -59,8 +59,14 @@ function redraw_check()
     });
 
 }
-function submit_Picks()
+function submit_pick_button_handler()
 {
+  if($("td[name=black_card_contents]").attr('id') == 'black_id_-1')// if black card is empty, don't even test anything else - submit should be empty
+  {
+     $("#submit_picks_button").addClass('ui-disabled'); 
+     return;
+  }
+ 
   //if czar, no submit
   if(pick2 == "0" && selectedItems.length == 1)
   {
@@ -68,7 +74,6 @@ function submit_Picks()
     {
       $("#submit_picks_button").removeClass('ui-disabled');
     }
-    //$('#submit_picks_button').show();	
   }
   else if (pick2 == "1" && selectedItems.length == 2)
   {
@@ -76,7 +81,6 @@ function submit_Picks()
     {
       $("#submit_picks_button").removeClass('ui-disabled');
     }
-    //$('#submit_picks_button').show(); 
   }
   else
   {
@@ -84,23 +88,68 @@ function submit_Picks()
     {
       $("#submit_picks_button").addClass('ui-disabled');
     }
-    //$('#submit_picks_button').hide();
+  }
+}
+
+function redraw_pick_button_handler()
+{
+  if( selectedItems.length > 0 && (redrawsRemaining - selectedItems.length >= 0) )
+  {
+    $("#redraw_button").removeClass('ui-disabled');  
+  }
+  else
+  {
+    $("#redraw_button").addClass('ui-disabled');
+  }
+}
+
+function redraw_white()
+{
+  var cardIDString = "";
+  var $i = 0;
+  for (x in selectedItems)
+  {
+    if($i == 0)
+    {
+      cardIDString += selectedItems[x];
+    }
+    else
+    {
+      cardIDString += ";" + selectedItems[x];
+    }
+    //TODO: revisit how i do selected items
+    $("#" + selectedItems[x]).html("");
+    $("#" + selectedItems[x]).css("background-color","#f2f2f2");
+    $("#" + selectedItems[x]).attr('id', "-1");
+    $i++;
+
+  }
+  selectedItems.splice(0, selectedItems.length); //Not sure why i did it this way, but it empties the array
+
+  $.get("redraw_white_cards.php", {"uid":jQuery.parseJSON($.cookie('cfh_cookie')).player_uid,"game_id":jQuery.parseJSON($.cookie('cfh_cookie')).game_uid, "cards": cardIDString});
+  $("#redraw_button").addClass('ui-disabled');
+  if(!$('#submit_picks_button').hasClass('ui-disabled'))
+  {
+    $("#submit_picks_button").addClass('ui-disabled');
   }
 }
 
 function card_select(element)
 {
-  if(imczar == 1) { return; } //if you are czar, cant select cards to submit
-
-  if($("td[name=black_card_contents]").attr('id') == 'black_id_-1') { return; } //if there is no black card, can't select any white cards
-
+  
   if ($(element).attr('id') == -1){ return;} //this is a blank white card, return
+
+  if(imczar == 1 && redrawsRemaining == 0) { return; } //you are czar and there are no redraws, cant select cards to submit
+
+  if($("td[name=black_card_contents]").attr('id') == 'black_id_-1' && redrawsRemaining == 0) { return; } //if there is no black card, can't select any white cards
+
 
   if(selectedItems.length == 0)
   {
     selectedItems.push(element.id);
     $(element).css("background-color","#868686");
-    submit_Picks();
+    submit_pick_button_handler();
+    redraw_pick_button_handler();
   }
   else
   {
@@ -112,7 +161,8 @@ function card_select(element)
       {
         selectedItems.splice(inTest,1);
 	$(element).css("background-color","#f2f2f2");
-	submit_Picks();
+        submit_pick_button_handler();
+        redraw_pick_button_handler();
       }
       inTest++;
     }
@@ -121,7 +171,8 @@ function card_select(element)
     {
       selectedItems.push(element.id);
       $(element).css("background-color","#868686");
-      submit_Picks();
+      submit_pick_button_handler();
+      redraw_pick_button_handler();
     }
   }
 }
@@ -281,6 +332,12 @@ function submit_white()
 
   $.get("submit_white_cards.php", {"uid":jQuery.parseJSON($.cookie('cfh_cookie')).player_uid,"game_id":jQuery.parseJSON($.cookie('cfh_cookie')).game_uid, "cards": cardIDString});	
   $("#submit_picks_button").addClass('ui-disabled');
+
+  if(!$('#redraw_button').hasClass('ui-disabled'))
+  {
+    $("#redraw_button").addClass('ui-disabled');
+  }
+  
 }
 
 function cleanup_current_hand()
@@ -411,8 +468,9 @@ function delete_cookie()
       <tr>
         <td>
           Redraws Reamining: <span id='redraws_remaining'> </span>
-          <a href="#" id = 'submit_picks_button' name = 'submit_picks_button' data-role='button' onclick = 'submit_white()' class='ui-disabled'> Submit</a>
+          <a href="#" id = 'redraw_button' name = 'redraw_button' data-role='button' onclick = 'redraw_white()' class='ui-disabled'> Redraw </a>
           <a href="#" id = 'draw_white_card' name = 'draw_white_card' data-role='button' onclick = 'draw_white()'> Draw </a>
+          <a href="#" id = 'submit_picks_button' name = 'submit_picks_button' data-role='button' onclick = 'submit_white()' class='ui-disabled'> Submit</a>
 	 </td>
       </tr>
       <tr id = 'white_section_row'>

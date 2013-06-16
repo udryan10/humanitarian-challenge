@@ -18,7 +18,7 @@ $STH2->execute();
 $jsonBuild = "{";
 
 $num_redraw = $STH->fetch();
-$num_redraw_allowed = $STH2-> fetch();
+$num_redraw_allowed = $STH2->fetch();
 $num_redraw_left = $num_redraw_allowed[0] - $num_redraw[0];
 
 $jsonBuild .= "\"redraws_remaining\" : \"$num_redraw_left\"";
