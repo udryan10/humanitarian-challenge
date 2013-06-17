@@ -1,0 +1,60 @@
+<?php ?>
+<!-- html for start of game -->
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src= "./javascript/jquery.cookie.js"></script>
+  <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+</head>
+
+<body>
+<script language = "javascript" type="text/javascript">
+
+function submit_white_suggest()
+{
+  if($("#white_textarea").val() != '')
+  {
+    $.post("suggest_card.php",{"card" : $("#white_textarea").val(), "color" : "white"}, function(data) {
+    $("#white_textarea").val('');
+    $.mobile.changePage('suggest_card.html', {
+      transition: "flip",
+      allowSamePageTransition: true,
+    });
+   });
+
+  }
+}
+function submit_black_suggest()
+{
+  if($("#black_textarea").val() != '')
+  {
+    $.post("suggest_card.php",{"card" : $("#white_textarea").val(), "color" : "black"}); 
+  }
+}
+</script>
+  <div data-role="page" id='register'>
+    <div data-role="header">
+      <h1>Humanitarian Challenge - Suggest Cards</h1>
+    </div><!-- /header -->
+    <div data-role="content">
+      <form>
+        <div data-role="fieldcontain">
+          <label for="textarea">White Card:</label>
+            <textarea name="textarea" id="white_textarea"></textarea>
+        </div>
+        <a id='suggest_white_card_button' href = '#' data-role = 'button' onclick='submit_white_suggest()'> Submit </a>
+      </form>     
+      <!--<form>
+        <div data-role="fieldcontain">
+          <label for="textarea">Black Card:</label>
+            <textarea name="textarea" id="black_textarea"></textarea>
+        </div>
+        <a id='suggest_black_card_button' href = '#' data-role = 'button' onclick= 'submit_black_suggest()' > Submit </a>
+      </form>     -->
+        <a id='exit' href = 'index.html' data-role = 'button' > Im Done, Get me out of here! </a>
+    </div>
+  </div>
+</body>
+</html>
