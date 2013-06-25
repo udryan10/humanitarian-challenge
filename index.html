@@ -12,6 +12,12 @@
   <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
   <script src= "./javascript/jquery.cookie.js"></script>
   <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+  <style type="text/css">
+    .ui-header .ui-title {
+    margin-right: 10%;
+    margin-left: 10%;
+}
+  </style>
 </head>
 
 <body>
@@ -39,7 +45,7 @@ $(document).ready(function(){
   }
   else { //this is a returning player
     //populate gameinfo div with player id and game id
-    $('#main_page_header').html("Humanitarin Challnege - " +jQuery.parseJSON($.cookie('cfh_cookie')).game_uid);
+    $('#main_page_header').html("Humanitarian Challenge - " +jQuery.parseJSON($.cookie('cfh_cookie')).game_uid);
     //setup our czar and black card timer checks
     $(location).attr('href','index.html#main');
     setInterval("czjarCheck()", 2000);
@@ -208,7 +214,7 @@ function submitInfo()
   
         $.cookie('cfh_cookie', cookieString , { expires: 1, path: '/' });
   	
-        $('#main_page_header').html(jQuery.parseJSON($.cookie('cfh_cookie')).game_uid); 
+        $('#main_page_header').html("Humanitarian Challenge - " +jQuery.parseJSON($.cookie('cfh_cookie')).game_uid);
         $(location).attr('href','index.html#main');
         setInterval("czjarCheck()", 2000);	
         setInterval("blackCardCheck()", 2000);
@@ -417,7 +423,7 @@ function delete_cookie()
       <a id='code_enter_form_submit' href="#" onclick="submitInfo()" data-role="button">Submit</a>
       <a id='create_new_game' href="#redraw_allow" data-role="button" data-rel="dialog" >Create New Game</a>
     </form>
-      <a id='suggest_card' href="suggest_card.html" data-role="button" >Dude, Let me contribute!</a>
+     <!-- <a id='suggest_card' href="suggest_card.html" data-role="button" >Dude, Let me contribute!</a> -->
   </div> <!-- /content -->
 </div>
 <div data-role="page" id='redraw_allow'>
