@@ -74,6 +74,8 @@ function submit_pick_button_handler()
   }
  
   //if czar, no submit
+  if(imczar == 1) {return;}
+  
   if(pick2 == "0" && selectedItems.length == 1)
   {
     if($('#submit_picks_button').hasClass('ui-disabled'))
