@@ -30,7 +30,12 @@ function submit_black_suggest()
 {
   if($("#black_textarea").val() != '')
   {
-    $.post("suggest_card.php",{"card" : $("#white_textarea").val(), "color" : "black"}); 
+    $.post("suggest_card.php",{"card" : $("#black_textarea").val(), "color" : "black"}); 
+    $("#black_textarea").val('');
+    $.mobile.changePage('suggest_card.html', {
+      transition: "flip",
+      allowSamePageTransition: true,
+    });
   }
 }
 </script>
@@ -39,6 +44,7 @@ function submit_black_suggest()
       <h1>Humanitarian Challenge - Suggest Cards</h1>
     </div><!-- /header -->
     <div data-role="content">
+     Cards will be reviewed and if they make the cut, they will be placed in the deck!
       <form>
         <div data-role="fieldcontain">
           <label for="textarea">White Card:</label>
@@ -46,13 +52,13 @@ function submit_black_suggest()
         </div>
         <a id='suggest_white_card_button' href = '#' data-role = 'button' onclick='submit_white_suggest()'> Submit </a>
       </form>     
-      <!--<form>
+      <form>
         <div data-role="fieldcontain">
           <label for="textarea">Black Card:</label>
             <textarea name="textarea" id="black_textarea"></textarea>
         </div>
         <a id='suggest_black_card_button' href = '#' data-role = 'button' onclick= 'submit_black_suggest()' > Submit </a>
-      </form>     -->
+      </form>  
         <a id='exit' href = 'index.html' data-role = 'button' > Im Done, Get me out of here! </a>
     </div>
   </div>
